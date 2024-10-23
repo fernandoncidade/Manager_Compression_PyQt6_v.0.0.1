@@ -1,0 +1,28 @@
+Aqui está a linha de comando para adicionar um arquivo para o formato 7z com os parâmetros especificados:
+
+7z a arquivo.7z -mx=9 -m0=LZMA2:d=1024m
+
+Explicação:
+
+a arquivo.7z: adiciona os arquivos ao arquivo 7z especificado.
+-mx=9: define o nível de compressão para "Ultra" (9), como especificado.
+-m0=LZMA2:d=1024m: define o método de compressão como LZMA2 com um tamanho de dicionário de 1024MB, como especificado.
+
+
+Para criar um arquivo no formato 7z com as especificações fornecidas, use a seguinte linha de comando:
+
+7z a arquivo.7z -mx=9 -m0=LZMA2:d=1024m:fb=128:lc=3:lp=0:pb=2 -mmt=3
+
+Explicação da linha de comando:
+
+7z a arquivo.7z: Cria um arquivo chamado arquivo.7z.
+-mx=9: Define o nível de compressão como Ultra (9).
+-m0=LZMA2:d=1024m:fb=128:lc=3:lp=0:pb=2: Define o método de compressão como LZMA2 com os seguintes parâmetros:
+d=1024m: Tamanho do dicionário é definido como 1024 MB.
+fb=128: Número de Fast Bytes é definido como 128.
+lc=3: Número de bits de contexto literal é definido como 3.
+lp=0: Número de bits de posição literal é definido como 0.
+pb=2: Número de bits de posição é definido como 2.
+-mmt=3: Define o número de threads da CPU como 3.
+Essa linha de comando irá criar um arquivo 7z com as especificações fornecidas.
+
