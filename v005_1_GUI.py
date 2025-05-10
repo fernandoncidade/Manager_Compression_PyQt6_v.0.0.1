@@ -6,6 +6,7 @@ from PyQt6.QtGui import QIcon, QAction, QFont
 from v005_2_layouts_compressao import LayoutsCompressao
 from v005_3_gerente_GUI_layouts import GerenciadorInterface
 from v005_4_metodos_compressao import MetodoCompressao, CompressType
+from v005_6_drag_drop import DragDropListWidget
 
 
 class InterfaceGrafica(QMainWindow, MetodoCompressao):
@@ -83,7 +84,7 @@ class InterfaceGrafica(QMainWindow, MetodoCompressao):
         button_layout.addWidget(self.create_button("Limpar Entrada", self.gerenciador_interface.clear_folders, "clear_button3.png"))
         button_layout.addWidget(self.create_button("Limpar Todas Saídas", self.gerenciador_interface.clear_output, "clear_button2.png"))
         layout.addLayout(button_layout)
-        self.gerenciador_interface.folder_listbox = QListWidget()
+        self.gerenciador_interface.folder_listbox = DragDropListWidget()
         layout.addWidget(self.gerenciador_interface.folder_listbox)
         return layout
 

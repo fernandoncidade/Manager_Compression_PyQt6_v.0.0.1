@@ -3,6 +3,7 @@ import sys
 from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QLabel, QListWidget
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt
+from v005_6_drag_drop import DragDropListWidget
 
 
 class LayoutsCompressao:
@@ -40,12 +41,12 @@ class LayoutsCompressao:
 
         output_label = QLabel(f"Diretório(s) de saída .{method.upper()}:")
         layout_2.addWidget(output_label)
-        listbox = QListWidget()
+
+        listbox = getattr(self.gerenciador_interface, f'output_listbox_{method}')
         listbox.setMinimumHeight(82)
         layout_2.addWidget(listbox)
         layout.addLayout(layout_2)
 
-        setattr(self.gerenciador_interface, f'output_listbox_{method}', listbox)
         return layout
 
     def create_rar_layout(self):

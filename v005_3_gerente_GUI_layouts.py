@@ -4,6 +4,7 @@ from v005_5_motores_compressao import (buscar_winrar_executavel, buscar_sevenzip
                                        CompressaoRAR, CompressaoZIP, Compressao7Z, CompressaoBZip2, CompressaoTarXZ,
                                        CompressaoTarGZ, CompressaoZIPX, CompressaoTGZ, CompressaoLZH, CompressaoISO,
                                        CompressaoTAR, CompressaoWIM, TesteIntegridade, Extracao)
+from v005_6_drag_drop import DragDropListWidget
 
 
 class GerenciadorInterface(QMainWindow):
@@ -33,21 +34,21 @@ class GerenciadorInterface(QMainWindow):
             print("Nenhum dos programas (WinRAR, 7-Zip ou Bandizip) encontrado. Por favor, instale um deles e tente novamente.")
             exit(1)
 
-        self.output_listbox_rar = QListWidget()
-        self.output_listbox_zip = QListWidget()
-        self.output_listbox_7z = QListWidget()
-        self.output_listbox_tar_bz2 = QListWidget()
-        self.output_listbox_zipx = QListWidget()
-        self.output_listbox_tar_xz = QListWidget()
-        self.output_listbox_tgz = QListWidget()
-        self.output_listbox_tar_gz = QListWidget()
-        self.output_listbox_lzh = QListWidget()
-        self.output_listbox_iso = QListWidget()
-        self.output_listbox_tar = QListWidget()
-        self.output_listbox_wim = QListWidget()
-        self.output_listbox = QListWidget()
-        self.folder_listbox = QListWidget()
-        self.output_listbox_extracao = QListWidget()
+        self.output_listbox_rar = DragDropListWidget(accept_folders_only=True)
+        self.output_listbox_zip = DragDropListWidget(accept_folders_only=True)
+        self.output_listbox_7z = DragDropListWidget(accept_folders_only=True)
+        self.output_listbox_tar_bz2 = DragDropListWidget(accept_folders_only=True)
+        self.output_listbox_zipx = DragDropListWidget(accept_folders_only=True)
+        self.output_listbox_tar_xz = DragDropListWidget(accept_folders_only=True)
+        self.output_listbox_tgz = DragDropListWidget(accept_folders_only=True)
+        self.output_listbox_tar_gz = DragDropListWidget(accept_folders_only=True)
+        self.output_listbox_lzh = DragDropListWidget(accept_folders_only=True)
+        self.output_listbox_iso = DragDropListWidget(accept_folders_only=True)
+        self.output_listbox_tar = DragDropListWidget(accept_folders_only=True)
+        self.output_listbox_wim = DragDropListWidget(accept_folders_only=True)
+        self.output_listbox = DragDropListWidget(accept_folders_only=True)
+        self.folder_listbox = DragDropListWidget()
+        self.output_listbox_extracao = DragDropListWidget(accept_folders_only=True)
         self.compressed_files = []
 
         self.init_threads()
