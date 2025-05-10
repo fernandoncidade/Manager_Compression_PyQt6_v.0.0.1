@@ -1,17 +1,21 @@
 import os
 import sys
-from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QLabel, QListWidget
+from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QLabel
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt
-from v005_6_drag_drop import DragDropListWidget
 
 
 class LayoutsCompressao:
     def __init__(self, gerenciador_interface, create_button):
         self.gerenciador_interface = gerenciador_interface
         self.create_button = create_button
-        self.base_path = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
-        self.icon_path = os.path.join(self.base_path, "icones")
+        
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(current_dir)
+        self.icon_path = os.path.join(project_root, "icones")
+
+        if hasattr(sys, "_MEIPASS"):
+            self.icon_path = os.path.join(sys._MEIPASS, "icones")
 
     def create_compression_method_layouts(self):
         methods = ['rar', 'zip', '7z', 'tar.bz2', 'zipx', 'tar.xz', 'tgz', 'tar.gz', 'lzh', 'iso', 'tar', 'wim', 'extracao']

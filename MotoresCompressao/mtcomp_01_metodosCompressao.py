@@ -4,7 +4,7 @@ import json
 from PyQt6.QtWidgets import QMenu
 from PyQt6.QtGui import QAction
 from functools import partial
-from v005_3_gerente_GUI_layouts import GerenciadorInterface
+from GerenciamentoUI.ui_02_gerenteGUILayouts import GerenciadorInterface
 from enum import Enum
 
 

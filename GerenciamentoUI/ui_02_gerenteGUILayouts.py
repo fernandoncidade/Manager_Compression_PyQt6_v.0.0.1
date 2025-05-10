@@ -1,10 +1,10 @@
 from queue import Queue
-from PyQt6.QtWidgets import (QMainWindow, QListWidget, QFileDialog, QTreeView, QMessageBox)
-from v005_5_motores_compressao import (buscar_winrar_executavel, buscar_sevenzip_executavel, buscar_bandizip_executavel,
+from PyQt6.QtWidgets import (QMainWindow, QFileDialog, QTreeView, QMessageBox)
+from MotoresCompressao.mtcomp_02_motoresCompressao import (buscar_winrar_executavel, buscar_sevenzip_executavel, buscar_bandizip_executavel,
                                        CompressaoRAR, CompressaoZIP, Compressao7Z, CompressaoBZip2, CompressaoTarXZ,
                                        CompressaoTarGZ, CompressaoZIPX, CompressaoTGZ, CompressaoLZH, CompressaoISO,
                                        CompressaoTAR, CompressaoWIM, TesteIntegridade, Extracao)
-from v005_6_drag_drop import DragDropListWidget
+from .ui_03_dragDrop import DragDropListWidget
 
 
 class GerenciadorInterface(QMainWindow):
