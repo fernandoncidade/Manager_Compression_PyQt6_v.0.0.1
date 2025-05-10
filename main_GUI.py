@@ -5,8 +5,8 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QHBoxLayout
 from PyQt6.QtGui import QIcon, QAction, QFont
 from GerenciamentoUI.ui_01_layoutsCompressao import LayoutsCompressao
 from GerenciamentoUI.ui_02_gerenteGUILayouts import GerenciadorInterface
-from MotoresCompressao.mtcomp_01_metodosCompressao import MetodoCompressao, CompressType
 from GerenciamentoUI.ui_03_dragDrop import DragDropListWidget
+from MotoresCompressao.mtcomp_01_metodosCompressao import MetodoCompressao, CompressType
 
 
 class InterfaceGrafica(QMainWindow, MetodoCompressao):
