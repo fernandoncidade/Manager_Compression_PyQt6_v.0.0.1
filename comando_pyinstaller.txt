@@ -253,6 +253,48 @@ pyinstaller --onefile -w --hidden-import "babel.numbers"
 
 
 
+Versão Onefile (Arquivo Único)
+
+pyinstaller --onefile -w -n "Gerenciador BackUp" 
+--hidden-import babel.numbers 
+--icon="icones\Manager-BackUp.ico" 
+--add-data="icones\*;icones" 
+--add-data="MotoresCompressao\Config_Method\config.json;MotoresCompressao\Config_Method" 
+--add-binary="C:\Program Files\7-Zip\*;7-Zip" 
+--add-binary="C:\Program Files\7-Zip\Lang\pt-br.txt;7-Zip\Lang" 
+--add-binary="C:\Program Files\WinRAR\*;WinRAR" 
+--add-binary="C:\Program Files\Bandizip\*;Bandizip" 
+"main_GUI.py"
+
+
+
+pyinstaller --onefile -w -n "Gerenciador BackUp" --hidden-import babel.numbers --icon="icones\Manager-BackUp.ico" --add-data="icones\*;icones" --add-data="MotoresCompressao\Config_Method\config.json;MotoresCompressao\Config_Method" --add-binary="C:\Program Files\7-Zip\*;7-Zip" --add-binary="C:\Program Files\7-Zip\Lang\pt-br.txt;7-Zip\Lang" --add-binary="C:\Program Files\WinRAR\*;WinRAR" --add-binary="C:\Program Files\Bandizip\*;Bandizip" "main_GUI.py"
+
+
+
+
+
+Versão com Diretório (_internal)
+
+pyinstaller -w -n "Gerenciador BackUp" 
+--hidden-import babel.numbers 
+--icon="icones\Manager-BackUp.ico" 
+--add-data="icones\*;icones" 
+--add-data="MotoresCompressao\Config_Method\config.json;MotoresCompressao\Config_Method" 
+--add-binary="C:\Program Files\7-Zip\*;7-Zip" 
+--add-binary="C:\Program Files\7-Zip\Lang\pt-br.txt;7-Zip\Lang" 
+--add-binary="C:\Program Files\WinRAR\*;WinRAR" 
+--add-binary="C:\Program Files\Bandizip\*;Bandizip" 
+"main_GUI.py"
+
+
+
+pyinstaller -w -n "Gerenciador BackUp" --hidden-import babel.numbers --icon="icones\Manager-BackUp.ico" --add-data="icones\*;icones" --add-data="MotoresCompressao\Config_Method\config.json;MotoresCompressao\Config_Method" --add-binary="C:\Program Files\7-Zip\*;7-Zip" --add-binary="C:\Program Files\7-Zip\Lang\pt-br.txt;7-Zip\Lang" --add-binary="C:\Program Files\WinRAR\*;WinRAR" --add-binary="C:\Program Files\Bandizip\*;Bandizip" "main_GUI.py"
+
+
+
+
+
 
 
 
