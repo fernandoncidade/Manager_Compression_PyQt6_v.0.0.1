@@ -1,3 +1,4 @@
+import sys
 from queue import Queue
 from PyQt6.QtWidgets import (QMainWindow, QFileDialog, QTreeView, QMessageBox)
 from MotoresCompressao.mtcomp_02_motoresCompressao import (buscar_winrar_executavel, buscar_sevenzip_executavel, buscar_bandizip_executavel,
@@ -25,6 +26,7 @@ class GerenciadorInterface(QMainWindow):
         self.compression_method_tar = None
         self.compression_method_wim = None
         self.update_existing = None
+        self.last_directory = None
 
         self.winrar_executable = buscar_winrar_executavel()
         self.sevenzip_executable = buscar_sevenzip_executavel()
@@ -119,9 +121,65 @@ class GerenciadorInterface(QMainWindow):
         self._browse(QFileDialog.FileMode.Directory, self.output_listbox_extracao)
 
     def _browse(self, file_mode, listbox):
+        if sys.platform == "win32" and file_mode == QFileDialog.FileMode.Directory:
+            from PyQt6.QtWidgets import QMessageBox
+            import os
+
+            dialog = QFileDialog()
+            dialog.setFileMode(file_mode)
+            dialog.setOption(QFileDialog.Option.DontUseNativeDialog, False)
+            dialog.setOption(QFileDialog.Option.ShowDirsOnly, True)
+
+            if self.last_directory and os.path.exists(self.last_directory):
+                dialog.setDirectory(self.last_directory)
+
+            continue_selecting = True
+            first_selection = True
+
+            while continue_selecting:
+                dialog_title = "Selecione um diretório" if first_selection else "Selecione outro diretório"
+                dialog.setWindowTitle(dialog_title)
+
+                if dialog.exec() == QFileDialog.DialogCode.Accepted:
+                    selected_dirs = dialog.selectedFiles()
+                    if selected_dirs:
+                        for dir_path in selected_dirs:
+                            exists = False
+                            for i in range(listbox.count()):
+                                if listbox.item(i).text() == dir_path:
+                                    exists = True
+                                    break
+
+                            if not exists:
+                                listbox.addItem(dir_path)
+
+                        self.last_directory = os.path.dirname(selected_dirs[0])
+
+                    reply = QMessageBox.question(
+                        None,
+                        "Seleção Múltipla",
+                        "Deseja adicionar mais diretórios?",
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+                    )
+                    continue_selecting = (reply == QMessageBox.StandardButton.Yes)
+                    first_selection = False
+
+                    if continue_selecting and self.last_directory:
+                        dialog.setDirectory(self.last_directory)
+
+                else:
+                    continue_selecting = False
+
+            return
+
         dialog = QFileDialog()
         dialog.setFileMode(file_mode)
-        dialog.setOption(QFileDialog.Option.ShowDirsOnly, True)
+
+        if self.last_directory and os.path.exists(self.last_directory):
+            dialog.setDirectory(self.last_directory)
+
+        if file_mode == QFileDialog.FileMode.Directory:
+            dialog.setOption(QFileDialog.Option.ShowDirsOnly, True)
 
         tree_view = dialog.findChild(QTreeView)
         if tree_view:
@@ -129,7 +187,11 @@ class GerenciadorInterface(QMainWindow):
 
         if dialog.exec() == QFileDialog.DialogCode.Accepted:
             selected_items = dialog.selectedFiles()
-            listbox.addItems(selected_items)
+            if selected_items:
+                listbox.addItems(selected_items)
+
+                import os
+                self.last_directory = os.path.dirname(selected_items[0])
 
     def select_output_path(self, output_listbox):
         self._browse(QFileDialog.FileMode.Directory, output_listbox)
