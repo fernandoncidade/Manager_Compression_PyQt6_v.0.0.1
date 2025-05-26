@@ -36,8 +36,10 @@ class InterfaceGrafica(QMainWindow, MetodoCompressao):
                 for compress_type in CompressType:
                     if f'compress_type_{compress_type.value}' in config:
                         self.set_compression_method(config[f'compress_type_{compress_type.value}'], compress_type)
+
         except FileNotFoundError:
             pass
+
         except Exception as e:
             print(f"Erro ao carregar o método de compressão: {e}")
 
@@ -118,8 +120,10 @@ class InterfaceGrafica(QMainWindow, MetodoCompressao):
         button.setFont(QFont('Arial', 9))
         if icon:
             button.setIcon(QIcon(os.path.join(getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__))), "icones", icon)))
+
         if callback:
             button.clicked.connect(callback)
+
         return button
 
     def create_method_checkboxes(self, layout):
@@ -131,6 +135,7 @@ class InterfaceGrafica(QMainWindow, MetodoCompressao):
             checkbox.method = method
             checkbox.toggled.connect(self.on_method_toggled)
             checkbox_layout.addWidget(checkbox)
+
         layout.addLayout(checkbox_layout)
 
     def on_method_toggled(self):
@@ -139,11 +144,13 @@ class InterfaceGrafica(QMainWindow, MetodoCompressao):
                 new_layout = self.compression_method_layouts[method]()
                 self.current_layouts[method] = new_layout
                 self.method_layouts_container.addLayout(new_layout)
+
             elif not checkbox.isChecked() and method in self.current_layouts:
                 layout_to_remove = self.current_layouts.pop(method)
                 self.remove_layout_widgets(layout_to_remove)
                 self.method_layouts_container.removeItem(layout_to_remove)
                 layout_to_remove.deleteLater()
+
         self.adjust_scroll_area()
 
     def adjust_scroll_area(self):
@@ -159,6 +166,7 @@ class InterfaceGrafica(QMainWindow, MetodoCompressao):
                 widget = item.widget()
                 if widget is not None:
                     widget.setParent(None)
+
                 else:
                     self.remove_layout_widgets(item.layout())
 

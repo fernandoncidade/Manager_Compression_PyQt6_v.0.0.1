@@ -90,6 +90,7 @@ class MetodoCompressao:
             action = QAction(legend, self)
             action.triggered.connect(partial(self.set_compression_method, method=method, compress_type=compress_type))
             submenu.addAction(action)
+
         parent_menu.addMenu(submenu)
 
     def set_compression_method(self, method, compress_type):
@@ -97,6 +98,7 @@ class MetodoCompressao:
             config_path = self.get_config_path()
             setattr(self.gerenciador_interface, f'compression_method_{compress_type.value}', method)
             self.save_compression_method(config_path)
+
         except Exception as e:
             print(f"Erro ao definir o método de compressão: {e}")
 
@@ -108,8 +110,10 @@ class MetodoCompressao:
                 for compress_type in CompressType:
                     if f'compress_type_{compress_type.value}' in config:
                         self.set_compression_method(config[f'compress_type_{compress_type.value}'], compress_type)
+
         except FileNotFoundError:
             pass
+
         except Exception as e:
             print(f"Erro ao carregar o método de compressão: {e}")
 
@@ -119,6 +123,7 @@ class MetodoCompressao:
             config = {f'compress_type_{compress_type.value}': getattr(self.gerenciador_interface, f'compression_method_{compress_type.value}') for compress_type in CompressType}
             with open(config_path, 'w') as f:
                 json.dump(config, f)
+
         except Exception as e:
             print(f"Erro ao salvar o método de compressão: {e}")
 

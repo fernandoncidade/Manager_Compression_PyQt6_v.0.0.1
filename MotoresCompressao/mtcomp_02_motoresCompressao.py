@@ -82,6 +82,7 @@ class CompressaoRAR(CompressaoBase):
         command = f'"{self.executable}" a -r -ep1 -m{self.compression_method} -afrar "{compressed_file}" "{folder_path}"'
         if self.update_existing:
             command = f'"{self.executable}" u -r -ep1 -m{self.compression_method} -afrar "{compressed_file}" "{folder_path}"'
+
         subprocess.run(command, shell=True)
 
 
@@ -95,6 +96,7 @@ class CompressaoZIP(CompressaoBase):
         command = f'"{self.executable}" a -r -tzip -mx={self.compression_method} "{compressed_file}" "{folder_path}"'
         if self.update_existing:
             command = f'"{self.executable}" u -r -tzip -mx={self.compression_method} "{compressed_file}" "{folder_path}"'
+
         subprocess.run(command, shell=True)
 
 
@@ -108,6 +110,7 @@ class Compressao7Z(CompressaoBase):
         command = f'"{self.executable}" a -r -t7z -mx={self.compression_method} "{compressed_file}" "{folder_path}"'
         if self.update_existing:
             command = f'"{self.executable}" u -r -t7z -mx={self.compression_method} "{compressed_file}" "{folder_path}"'
+
         subprocess.run(command, shell=True)
 
 
@@ -129,9 +132,11 @@ class CompressaoBZip2(CompressaoBase):
                     command = [self.executable, "a", "-r", "-tbzip2", f"-mx={self.compression_method}", compressed_file, temp_tar_path]
                     subprocess.run(command, shell=True)
                     os.remove(temp_tar_path)
+
                 elif self.update_existing:
                     command = [self.executable, "u", "-r", "-tbzip2", f"-mx={self.compression_method}", compressed_file, folder_path]
                     subprocess.run(command, shell=True)
+
         except (PermissionError, subprocess.CalledProcessError) as e:
             print(f"Erro ao processar {folder_path}: {e}")
 
@@ -146,6 +151,7 @@ class CompressaoZIPX(CompressaoBase):
         command = f'"{self.executable}" c -fmt:zipx -r -y -l:{self.compression_method} -storeroot:yes "{compressed_file}" "{folder_path}"'
         if self.update_existing:
             command = f'"{self.executable}" a -fmt:zipx -r -l:{self.compression_method} -storeroot:yes "{compressed_file}" "{folder_path}"'
+
         subprocess.run(command, shell=True)
 
 
@@ -167,9 +173,11 @@ class CompressaoTarXZ(CompressaoBase):
                     command = [self.executable, "c", '-fmt:xz', "-r", '-y', f'-l:{self.compression_method}', '-storeroot:yes', compressed_file, temp_tar_path]
                     subprocess.run(command, shell=True)
                     os.remove(temp_tar_path)
+
                 elif self.update_existing:
                     command = [self.executable, 'a', '-fmt:xz', '-r', '-y', f'-l:{self.compression_method}', '-storeroot:yes', compressed_file, folder_path]
                     subprocess.run(command, shell=True)
+
         except (PermissionError, subprocess.CalledProcessError) as e:
             print(f"Erro ao processar {folder_path}: {e}")
 
@@ -184,6 +192,7 @@ class CompressaoTGZ(CompressaoBase):
         command = f'"{self.executable}" c -fmt:tgz -r -y -l:{self.compression_method} -storeroot:yes "{compressed_file}" "{folder_path}"'
         if self.update_existing:
             command = f'"{self.executable}" a -fmt:tgz -r -l:{self.compression_method} -storeroot:yes "{compressed_file}" "{folder_path}"'
+
         subprocess.run(command, shell=True)
 
 
@@ -205,9 +214,11 @@ class CompressaoTarGZ(CompressaoBase):
                     command = [self.executable, "c", '-fmt:gz', "-r", '-y', f'-l:{self.compression_method}', '-storeroot:yes', compressed_file, temp_tar_path]
                     subprocess.run(command, shell=True)
                     os.remove(temp_tar_path)
+
                 elif self.update_existing:
                     command = [self.executable, 'a', '-fmt:gz', '-r', '-y', f'-l:{self.compression_method}', '-storeroot:yes', compressed_file, folder_path]
                     subprocess.run(command, shell=True)
+
         except (PermissionError, subprocess.CalledProcessError) as e:
             print(f"Erro ao processar {folder_path}: {e}")
 
@@ -222,6 +233,7 @@ class CompressaoLZH(CompressaoBase):
         command = f'"{self.executable}" c -fmt:lzh -r -y -l:{self.compression_method} -storeroot:yes "{compressed_file}" "{folder_path}"'
         if self.update_existing:
             command = f'"{self.executable}" a -fmt:lzh -r -l:{self.compression_method} -storeroot:yes "{compressed_file}" "{folder_path}"'
+
         subprocess.run(command, shell=True)
 
 
@@ -235,6 +247,7 @@ class CompressaoISO(CompressaoBase):
         command = f'"{self.executable}" c -fmt:iso -r -y -l:{self.compression_method} -storeroot:yes "{compressed_file}" "{folder_path}"'
         if self.update_existing:
             command = f'"{self.executable}" a -fmt:iso -r -l:{self.compression_method} -storeroot:yes "{compressed_file}" "{folder_path}"'
+
         subprocess.run(command, shell=True)
 
 
@@ -248,6 +261,7 @@ class CompressaoTAR(CompressaoBase):
         command = f'"{self.executable}" a -r -ttar "{compressed_file}" "{folder_path}"'
         if self.update_existing:
             command = f'"{self.executable}" u -r -ttar "{compressed_file}" "{folder_path}"'
+
         subprocess.run(command, shell=True)
 
 
@@ -261,6 +275,7 @@ class CompressaoWIM(CompressaoBase):
         command = f'"{self.executable}" a -r -twim "{compressed_file}" "{folder_path}"'
         if self.update_existing:
             command = f'"{self.executable}" u -r -twim "{compressed_file}" "{folder_path}"'
+
         subprocess.run(command, shell=True)
 
 

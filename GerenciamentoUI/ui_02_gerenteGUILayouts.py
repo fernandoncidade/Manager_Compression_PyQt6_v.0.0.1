@@ -121,9 +121,10 @@ class GerenciadorInterface(QMainWindow):
         self._browse(QFileDialog.FileMode.Directory, self.output_listbox_extracao)
 
     def _browse(self, file_mode, listbox):
+        import os
+
         if sys.platform == "win32" and file_mode == QFileDialog.FileMode.Directory:
             from PyQt6.QtWidgets import QMessageBox
-            import os
 
             dialog = QFileDialog()
             dialog.setFileMode(file_mode)
@@ -189,8 +190,6 @@ class GerenciadorInterface(QMainWindow):
             selected_items = dialog.selectedFiles()
             if selected_items:
                 listbox.addItems(selected_items)
-
-                import os
                 self.last_directory = os.path.dirname(selected_items[0])
 
     def select_output_path(self, output_listbox):
@@ -332,6 +331,7 @@ class GerenciadorInterface(QMainWindow):
     def _store_as(self, thread, output_listbox, compression_method):
         if self.folder_listbox.count() == 0:
             self.show_selection_compression_warning()
+
         elif output_listbox.count() == 0:
             self.show_selection_destination_warning()
             
@@ -339,6 +339,7 @@ class GerenciadorInterface(QMainWindow):
             new_thread = thread.__class__(thread.executable, self.update_existing, output_listbox, self.folder_listbox, compress_as=True, compression_method=compression_method)
             new_thread.finished.connect(self.on_compress_finished)
             self.start_compression_thread(new_thread)
+
         else:
             self.show_method_warning()
 
@@ -354,28 +355,35 @@ class GerenciadorInterface(QMainWindow):
             self.teste_integridade_thread = TesteIntegridade(self.sevenzip_executable, self.bandizip_executable, compressed_files)
             self.teste_integridade_thread.finished.connect(self.on_teste_integridade_finished)
             self.teste_integridade_thread.start()
+
         elif self.bandizip_executable and compressed_files:
             self.teste_integridade_thread = TesteIntegridade(self.bandizip_executable, self.sevenzip_executable, compressed_files)
             self.teste_integridade_thread.finished.connect(self.on_teste_integridade_finished)
             self.teste_integridade_thread.start()
+
         else:
             self.show_integridade_warning()
 
     def extract_files(self):
         if self.folder_listbox.count() == 0:
             self.show_selection_descompression_warning()
+
         elif self.output_listbox_extracao.count() == 0:
             self.show_selection_destination_warning()
+
         else:
             self._start_extraction_thread()
 
     def _start_extraction_thread(self):
         if self.winrar_executable:
             self.extract_thread = Extracao(self.winrar_executable, self.sevenzip_executable, self.bandizip_executable, self.output_listbox_extracao, self.folder_listbox)
+
         elif self.sevenzip_executable:
             self.extract_thread = Extracao(self.sevenzip_executable, self.winrar_executable, self.bandizip_executable, self.output_listbox_extracao, self.folder_listbox)
+
         elif self.bandizip_executable:
             self.extract_thread = Extracao(self.bandizip_executable, self.winrar_executable, self.sevenzip_executable, self.output_listbox_extracao, self.folder_listbox)
+
         else:
             self.show_extract_warning()
             return
@@ -389,6 +397,7 @@ class GerenciadorInterface(QMainWindow):
         if any(thread.isRunning() and thread.format == new_format for thread in self.compress_threads):
             self.compress_queue.put(new_thread)
             self.show_queue_warning()
+
         else:
             new_thread.start()
             self.compress_threads.append(new_thread)
@@ -400,6 +409,7 @@ class GerenciadorInterface(QMainWindow):
         if not self.compress_queue.empty():
             next_thread = self.compress_queue.get()
             self.start_compression_thread(next_thread)
+
         elif not self.compress_threads:
             self.show_info_message("Empacotamento Concluído", "O Empacotamento dos arquivos foi concluído com sucesso!")
 
