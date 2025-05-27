@@ -7,7 +7,7 @@ from MotoresCompressao.mtcomp_02_motoresCompressao import (buscar_winrar_executa
                                        CompressaoTarGZ, CompressaoZIPX, CompressaoTGZ, CompressaoLZH, CompressaoISO,
                                        CompressaoTAR, CompressaoWIM, TesteIntegridade, Extracao)
 from .ui_03_dragDrop import DragDropListWidget
-from .ui_04_dialog_traducao import FileDialogTraduzivel, MessageBoxTraduzivel
+from .ui_04_dialogTraducao import FileDialogTraduzivel, MessageBoxTraduzivel
 
 
 class GerenciadorInterface(QMainWindow):

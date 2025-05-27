@@ -1,38 +1,62 @@
-# Gerenciador de Backup
+# Gerenciador de Compressão
 
-Este projeto é uma aplicação de gerenciamento de backup desenvolvida em Python usando PyQt6. A aplicação permite aos usuários selecionar diferentes métodos de compressão para arquivar pastas e arquivos. A interface gráfica é projetada para ser intuitiva e fácil de usar, oferecendo suporte para vários formatos de compressão e funcionalidades adicionais. São suportados 12 métodos de compressão e de descompressão.
+Este projeto é uma aplicação de gerenciamento de compressão desenvolvida em Python usando PyQt6. A aplicação permite aos usuários selecionar diferentes métodos de compressão para arquivar pastas e arquivos. A interface gráfica é projetada para ser intuitiva e fácil de usar, oferecendo suporte para vários formatos de compressão e funcionalidades adicionais. São suportados 12 métodos de compressão e descompressão.
 
-Observação: É necessário ter instalado no seu PC os seguintes programas: WinRAR, 7-Zip e Bandizip. Para utilizar a compressão do WinRAR é necessário ter comprado a versão paga. Pois se trata de um software proprietário.
+Observação: É necessário ter instalado no seu PC os seguintes programas: WinRAR, 7-Zip e Bandizip. Para utilizar a compressão do WinRAR e do Bandizip é necessário ter comprado a versão paga, pois se trata de um software proprietário.
 
 ## Visão Geral
 
-O projeto utiliza os seguintes módulos personalizados:
+O projeto está organizado em vários módulos:
 
-- `_2_gerenciador_GUI`: Gerencia a interface gráfica do usuário.
-- `_3_metodos_compressao`: Define métodos de compressão suportados.
-- `_4_motores_compressao`: Implementa motores de compressão.
-- `_5_paleta_cores_design`: Fornece a paleta de cores para o design da aplicação.
+- `main_GUI.py`: Script principal que inicia a aplicação e define a interface gráfica.
+- `GerenciamentoUI`: Pacote que gerencia todos os componentes da interface do usuário.
+  - `ui_01_layoutsCompressao.py`: Define os layouts para cada método de compressão.
+  - `ui_02_gerenteGUILayouts.py`: Gerencia a interface gráfica do usuário.
+  - `ui_03_dragDrop.py`: Implementa funcionalidade de arrastar e soltar.
+  - `ui_04_dialogTraducao.py`: Gerencia diálogos com suporte a tradução.
+- `MotoresCompressao`: Pacote que contém motores de compressão e métodos.
+  - `mtcomp_01_metodosCompressao.py`: Define métodos de compressão suportados.
+  - `mtcomp_02_motoresCompressao.py`: Implementa motores de compressão.
+- `Traducao`: Pacote para suporte a múltiplos idiomas.
+  - `tr_01_gerenciadorTraducao.py`: Gerencia traduções da interface.
+  - `tr_02_compileTranslations.py`: Compila arquivos de tradução.
 
 ## Funcionalidades
 
-- **Adicionar Pastas e Arquivos**: Permite ao usuário adicionar pastas e arquivos para backup.
-- **Testar Integridade**: Verifica a integridade dos arquivos e pastas adicionados.
-- **Selecionar Método de Compressão**: Escolha entre vários métodos de compressão (RAR, ZIP, 7Z, etc.).
+- **Interface Multilíngue**: Suporte para português (Brasil) e inglês (EUA).
+- **Adicionar Pastas e Arquivos**: Permite ao usuário adicionar pastas e arquivos para compressão.
+- **Arrastar e Soltar**: Suporte para adicionar arquivos e pastas via drag-and-drop.
+- **Testar Integridade**: Verifica a integridade dos arquivos compactados.
+- **Selecionar Método de Compressão**: Escolha entre vários métodos de compressão:
+  - RAR
+  - ZIP
+  - 7Z
+  - TAR.BZ2
+  - ZIPX
+  - TAR.XZ
+  - TGZ
+  - TAR.GZ
+  - LZH
+  - ISO
+  - TAR
+  - WIM
+- **Extrair Arquivos**: Descompacta arquivos nos formatos suportados.
 - **Especificar Diretórios de Saída**: Define onde os arquivos comprimidos serão armazenados.
 - **Limpar Entradas e Saídas**: Limpa as entradas de pastas e arquivos e as saídas de compressão.
+- **Configurar Níveis de Compressão**: Permite definir diferentes níveis de compressão para cada formato.
 
 ## Instalação
 
 1. Clone este repositório:
 
    ```bash
-   git clone https://github.com/fernandoncidade/Gerenciador_BackUp_PyQt6_v.0.0.2
+   git clone https://github.com/fernandoncidade/Manager_Compression_PyQt6_v.0.0.1
    ```
 
 2. Navegue até o diretório do projeto:
 
    ```bash
-   cd Gerenciador_BackUp_PyQt6_v.0.0.2
+   cd Manager_Compression_PyQt6_v.0.0.1
    ```
 
 3. Instale as dependências necessárias:
@@ -44,22 +68,32 @@ O projeto utiliza os seguintes módulos personalizados:
 4. Execute o script principal:
 
    ```bash
-   python _1_GUI_backup.py
+   python main_GUI.py
    ```
+
+## Requisitos
+
+- Python 3.6+
+- PyQt6
+- WinRAR, 7-Zip e Bandizip instalados no sistema
 
 ## Uso
 
 1. **Adicionar Pastas/Arquivos**: Clique em "Adicionar Pastas" ou "Adicionar Arquivos" e selecione os itens desejados.
-2. **Testar Integridade**: Clique em "Testar Integridade" para verificar os itens adicionados.
-3. **Selecionar Método de Compressão**: Use o menu de configurações para escolher o método de compressão desejado.
-4. **Especificar Diretórios de Saída**: Clique no botão apropriado para definir onde os arquivos comprimidos serão salvos.
-5. **Limpar Entradas/Saídas**: Use os botões para limpar as entradas e saídas conforme necessário.
+2. **Selecionar Métodos de Compressão**: Marque as caixas de seleção dos métodos de compressão que deseja utilizar.
+3. **Testar Integridade**: Clique em "Testar Integridade" para verificar os itens adicionados.
+4. **Selecionar Método de Compressão**: Use o menu de configurações para escolher o método de compressão desejado.
+5. **Especificar Diretórios de Saída**: Clique no botão apropriado para definir onde os arquivos comprimidos serão salvos.
+6. **Extrair Arquivos**: Use a seção "EXTRAÇÃO" para descompactar arquivos.
+7. **Limpar Entradas/Saídas**: Use os botões para limpar as entradas e saídas conforme necessário.
 
 ## Estrutura do Código
 
 - **`InterfaceGrafica`**: Classe principal que define a interface gráfica e interage com os métodos de compressão.
 - **`GerenciadorInterface`**: Módulo responsável por gerenciar a interface do usuário.
 - **`MetodoCompressao`**: Define os métodos de compressão suportados e suas implementações.
+- **`CompressaoBase`**: Classe base para os diferentes motores de compressão.
+- **`GerenciadorTraducao`**: Gerencia as traduções da interface do usuário.
 
 ## Contribuição
 
@@ -171,16 +205,15 @@ INFORMAÇÕES EXTRAS A RESPEITO DAS LICENÇAS:
   Política de Licença Bandizip
   -------------------------
 
-	Ao comprar o Bandizip, você garante o uso do produto de acordo com a seguinte política de licença.
+  Ao comprar o Bandizip, você garante o uso do produto de acordo com a seguinte política de licença.
 
 
-	Licença Permanente
-		A licença do Bandizip não tem data de expiração; você pode usar o produto permanentemente após a compra ser feita.
+  Licença Permanente
+    A licença do Bandizip não tem data de expiração; você pode usar o produto permanentemente após a compra ser feita.
 
 
-	Disponível em qualquer lugar para qualquer pessoa
-		A licença do Bandizip pode ser usada em qualquer lugar, incluindo residências e empresas, para fins comerciais e não comerciais.
+  Disponível em qualquer lugar para qualquer pessoa
+    A licença do Bandizip pode ser usada em qualquer lugar, incluindo residências e empresas, para fins comerciais e não comerciais.
 
-		Essa elegibilidade vale igualmente para a Standard Edition, que não exige a compra de uma licença.
+    Essa elegibilidade vale igualmente para a Standard Edition, que não exige a compra de uma licença.
     ----
-        
