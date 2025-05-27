@@ -58,20 +58,97 @@ brazilianportuguese.AllUsers=Todos os usuários
 brazilianportuguese.JustMe=Apenas para mim
 brazilianportuguese.CreateDesktopIcon=Criar ícone na Área de Trabalho
 brazilianportuguese.LaunchApp=Iniciar {#MyAppName} após a instalação
+; Mensagens de idiomas
+brazilianportuguese.Portuguese=Português (Brasil)
+brazilianportuguese.English=Inglês (EUA)
+brazilianportuguese.AppLanguage=Idioma do aplicativo
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "langpt_BR"; Description: "{cm:Portuguese}"; GroupDescription: "{cm:AppLanguage}"; Flags: exclusive
+Name: "langen_US"; Description: "{cm:English}"; GroupDescription: "{cm:AppLanguage}"; Flags: exclusive unchecked
 
 [Files]
 Source: "C:\Users\ferna\WORK\Projetos_Python\Manager_Compression_PyQt6_v.0.0.1\dist\Gerenciador BackUp\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\ferna\WORK\Projetos_Python\Manager_Compression_PyQt6_v.0.0.1\dist\Gerenciador BackUp\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
+; Criar arquivo de configuração com o idioma selecionado
+[Code]
+procedure CreateLanguageConfigJSON();
+var
+  FileName: string;
+  LanguageCode: string;
+  JSONContent: string;
+begin
+  FileName := ExpandConstant('{app}\_internal\Config_Language\language.json');
+
+  { Modificação: Verificar se estamos em modo silencioso }
+  if (WizardSilent) then
+    LanguageCode := 'en_US'  // Use inglês como padrão em instalação silenciosa
+  else if WizardIsTaskSelected('langpt_BR') then
+    LanguageCode := 'pt_BR'
+  else if WizardIsTaskSelected('langen_US') then
+    LanguageCode := 'en_US'
+  else
+    LanguageCode := 'pt_BR'; // Idioma padrão
+
+  // Criando o conteúdo JSON
+  JSONContent := '{' + #13#10;
+  JSONContent := JSONContent + '  "idioma": "' + LanguageCode + '"' + #13#10;
+  JSONContent := JSONContent + '}';
+
+  SaveStringToFile(FileName, JSONContent, False);
+end;
+
+{ Modificação: Detectar instalação silenciosa e selecionar tarefas padrão }
+function ShouldSkipPage(PageID: Integer): Boolean;
+begin
+  Result := False;
+
+  { Pular página de tarefas se instalação for silenciosa }
+  if (WizardSilent) and (PageID = wpSelectTasks) then
+    Result := True;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if CurStep = ssPostInstall then
+  begin
+    CreateLanguageConfigJSON();
+  end;
+end;
+
+// Função unificada para garantir remoção completa durante a desinstalação
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var
+  LogsPath, InternalPath, AppPath: string;
+begin
+  // Executar apenas no final da desinstalação
+  if CurUninstallStep = usPostUninstall then
+  begin
+    // Remover pasta de logs primeiro
+    LogsPath := ExpandConstant('{app}\_internal\logs');
+    if DirExists(LogsPath) then
+      DelTree(LogsPath, True, True, True);
+      
+    // Remover diretório _internal
+    InternalPath := ExpandConstant('{app}\_internal');
+    if DirExists(InternalPath) then
+      DelTree(InternalPath, True, True, True);
+      
+    // Finalmente, garantir que o diretório principal seja removido
+    AppPath := ExpandConstant('{app}');
+    if DirExists(AppPath) then
+      DelTree(AppPath, True, True, True);
+  end;
+end;
+
 [Registry]
 ;Registry data for the application
 Root: HKLM; Subkey: "SOFTWARE\Gerenciador BackUp"; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: "SOFTWARE\Gerenciador BackUp"; ValueType: string; ValueName: "InstallPath"; ValueData: "{app}"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "SOFTWARE\Gerenciador BackUp"; ValueType: string; ValueName: "Version"; ValueData: "0.0.1"; Flags: uninsdeletevalue
+Root: HKLM; Subkey: "SOFTWARE\Gerenciador Back Up"; ValueType: string; ValueName: "Version"; ValueData: "0.0.1"; Flags: uninsdeletevalue
 
 ; Menu de contexto para pastas
 Root: HKCR; Subkey: "Directory\shell\GerenciadorBackUp"; Flags: uninsdeletekeyifempty
@@ -97,30 +174,29 @@ Filename: "{sys}\icacls.exe"; Parameters: """{app}"" /grant *S-1-5-32-545:(OI)(C
 ; Iniciar aplicativo após instalação
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent; WorkingDir: "{app}"
 
-; Código para desinstalação completa
-[Code]
-procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
-var
-  AppPath: string;
-begin
-  // Executar apenas no final da desinstalação
-  if CurUninstallStep = usPostUninstall then
-  begin
-    // Caminho do aplicativo
-    AppPath := ExpandConstant('{app}');
-    
-    // Verificar se o diretório ainda existe e remover completamente
-    if DirExists(AppPath) then
-      DelTree(AppPath, True, True, True);
-  end;
-end;
-
 [ReturnCodes]
-; Códigos de retorno personalizados
-0=Success
+; Instalação cancelada pelo usuário
 6000=UserCancelled
+
+; O aplicativo já existe
 6001=AppAlreadyExists
+
+; Instalação já em andamento
 6002=AnotherInstallationRunning
+
+; O espaço em disco está cheio
 6003=DiskSpaceFull
+
+; Reinicialização necessária
 6004=RebootRequired
+
+; Falha de rede (Exemplo - adicione mais códigos conforme necessário)
 6005=NetworkFailure_DownloadError
+6006=NetworkFailure_ConnectionLost
+
+; Pacote rejeitado durante a instalação
+6007=PackageRejectedByPolicy
+
+; Instalação bem-sucedida (O código 0 geralmente indica sucesso, mas podemos adicionar um específico se o instalador retornar outro)
+0=Success
+

@@ -2,14 +2,14 @@ import os
 import sys
 from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QLabel
 from PyQt6.QtGui import QIcon
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QCoreApplication
 
 
 class LayoutsCompressao:
     def __init__(self, gerenciador_interface, create_button):
         self.gerenciador_interface = gerenciador_interface
         self.create_button = create_button
-        
+
         current_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.dirname(current_dir)
         self.icon_path = os.path.join(project_root, "icones")
@@ -26,16 +26,30 @@ class LayoutsCompressao:
         layout_1 = QVBoxLayout()
         layout_2 = QVBoxLayout()
 
-        output_button = self.create_button(f"Especificar Saída .{method.upper()}")
+        base_text = QCoreApplication.translate("InterfaceGrafica", "Especificar Saída")
+        method_display = method
+        if method == "extracao":
+            method_display = QCoreApplication.translate("InterfaceGrafica", "Extração")
+
+        else:
+            method_display = f".{method.upper()}"
+
+        output_button = self.create_button(f"{base_text} {method_display}")
         output_button.clicked.connect(getattr(self.gerenciador_interface, f'output_button_output_{method.upper()}_clicked'))
         layout_1.addWidget(output_button)
 
-        store_button = self.create_button(f"Armazenar .{method.upper()}")
+        store_text = QCoreApplication.translate("InterfaceGrafica", "Armazenar")
+        if method == "extracao":
+            store_button = self.create_button(QCoreApplication.translate("InterfaceGrafica", "Extrair Arquivos"))
+
+        else:
+            store_button = self.create_button(f"{store_text} {method_display}")
+
         store_button.setIcon(QIcon(os.path.join(self.icon_path, icon_name)))
         store_button.clicked.connect(store_callback)
         layout_1.addWidget(store_button)
 
-        clear_button = self.create_button("Limpar Saída")
+        clear_button = self.create_button(QCoreApplication.translate("InterfaceGrafica", "Limpar Saída"))
         clear_button.setIcon(QIcon(os.path.join(self.icon_path, "clear_button2.png")))
         clear_button.clicked.connect(clear_callback)
         layout_1.addWidget(clear_button)
@@ -43,7 +57,14 @@ class LayoutsCompressao:
         layout.addLayout(layout_1)
         layout.setAlignment(layout_1, Qt.AlignmentFlag.AlignBottom)
 
-        output_label = QLabel(f"Diretório(s) de saída .{method.upper()}:")
+        output_dir_text = QCoreApplication.translate("InterfaceGrafica", "Diretório(s) de saída")
+        if method == "extracao":
+            output_label_text = QCoreApplication.translate("InterfaceGrafica", "Diretório(s) de destino para extração:")
+
+        else:
+            output_label_text = f"{output_dir_text} {method_display}:"
+
+        output_label = QLabel(output_label_text)
         layout_2.addWidget(output_label)
 
         listbox = getattr(self.gerenciador_interface, f'output_listbox_{method}')

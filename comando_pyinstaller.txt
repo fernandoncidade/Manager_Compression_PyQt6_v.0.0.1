@@ -259,16 +259,18 @@ pyinstaller --onefile -w -n "Gerenciador BackUp"
 --hidden-import babel.numbers 
 --icon="icones\Manager-BackUp.ico" 
 --add-data="icones\*;icones" 
---add-data="MotoresCompressao\Config_Method\config.json;MotoresCompressao\Config_Method" 
+--add-data="Traducao\translations\*;Traducao\translations" 
+--add-data="Config_Language\language.json;Config_Language" 
 --add-binary="C:\Program Files\7-Zip\*;7-Zip" 
 --add-binary="C:\Program Files\7-Zip\Lang\pt-br.txt;7-Zip\Lang" 
+--add-binary="C:\Program Files\7-Zip\Lang\en.ttt;7-Zip\Lang" 
 --add-binary="C:\Program Files\WinRAR\*;WinRAR" 
 --add-binary="C:\Program Files\Bandizip\*;Bandizip" 
 "main_GUI.py"
 
 
 
-pyinstaller --onefile -w -n "Gerenciador BackUp" --hidden-import babel.numbers --icon="icones\Manager-BackUp.ico" --add-data="icones\*;icones" --add-data="MotoresCompressao\Config_Method\config.json;MotoresCompressao\Config_Method" --add-binary="C:\Program Files\7-Zip\*;7-Zip" --add-binary="C:\Program Files\7-Zip\Lang\pt-br.txt;7-Zip\Lang" --add-binary="C:\Program Files\WinRAR\*;WinRAR" --add-binary="C:\Program Files\Bandizip\*;Bandizip" "main_GUI.py"
+pyinstaller --onefile -w -n "Gerenciador BackUp" --hidden-import babel.numbers --icon="icones\Manager-BackUp.ico" --add-data="icones\*;icones" --add-data="Traducao\translations\*;Traducao\translations" --add-data="Config_Language\language.json;Config_Language" --add-binary="C:\Program Files\7-Zip\*;7-Zip" --add-binary="C:\Program Files\7-Zip\Lang\pt-br.txt;7-Zip\Lang" --add-binary="C:\Program Files\7-Zip\Lang\en.ttt;7-Zip\Lang" --add-binary="C:\Program Files\WinRAR\*;WinRAR" --add-binary="C:\Program Files\Bandizip\*;Bandizip" "main_GUI.py"
 
 
 
@@ -280,16 +282,18 @@ pyinstaller -w -n "Gerenciador BackUp"
 --hidden-import babel.numbers 
 --icon="icones\Manager-BackUp.ico" 
 --add-data="icones\*;icones" 
---add-data="MotoresCompressao\Config_Method\config.json;MotoresCompressao\Config_Method" 
+--add-data="Traducao\translations\*;Traducao\translations" 
+--add-data="Config_Language\language.json;Config_Language" 
 --add-binary="C:\Program Files\7-Zip\*;7-Zip" 
 --add-binary="C:\Program Files\7-Zip\Lang\pt-br.txt;7-Zip\Lang" 
+--add-binary="C:\Program Files\7-Zip\Lang\en.ttt;7-Zip\Lang" 
 --add-binary="C:\Program Files\WinRAR\*;WinRAR" 
 --add-binary="C:\Program Files\Bandizip\*;Bandizip" 
 "main_GUI.py"
 
 
 
-pyinstaller -w -n "Gerenciador BackUp" --hidden-import babel.numbers --icon="icones\Manager-BackUp.ico" --add-data="icones\*;icones" --add-data="MotoresCompressao\Config_Method\config.json;MotoresCompressao\Config_Method" --add-binary="C:\Program Files\7-Zip\*;7-Zip" --add-binary="C:\Program Files\7-Zip\Lang\pt-br.txt;7-Zip\Lang" --add-binary="C:\Program Files\WinRAR\*;WinRAR" --add-binary="C:\Program Files\Bandizip\*;Bandizip" "main_GUI.py"
+pyinstaller -w -n "Gerenciador BackUp" --hidden-import babel.numbers --icon="icones\Manager-BackUp.ico" --add-data="icones\*;icones" --add-data="Traducao\translations\*;Traducao\translations" --add-data="Config_Language\language.json;Config_Language" --add-binary="C:\Program Files\7-Zip\*;7-Zip" --add-binary="C:\Program Files\7-Zip\Lang\pt-br.txt;7-Zip\Lang" --add-binary="C:\Program Files\7-Zip\Lang\en.ttt;7-Zip\Lang" --add-binary="C:\Program Files\WinRAR\*;WinRAR" --add-binary="C:\Program Files\Bandizip\*;Bandizip" "main_GUI.py"
 
 
 

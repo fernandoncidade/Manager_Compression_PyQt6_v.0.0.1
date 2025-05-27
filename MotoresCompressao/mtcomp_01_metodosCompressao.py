@@ -3,43 +3,57 @@ import sys
 import json
 from PyQt6.QtWidgets import QMenu
 from PyQt6.QtGui import QAction
+from PyQt6.QtCore import QCoreApplication
 from functools import partial
 from enum import Enum
 from GerenciamentoUI.ui_02_gerenteGUILayouts import GerenciadorInterface
 
 
-LEGENDS_WINRAR = {
-    "0": "0 - Armazenar",
-    "1": "1 - Mais Rápido",
-    "2": "2 - Rápido",
-    "3": "3 - Normal",
-    "4": "4 - Bom",
-    "5": "5 - Ótimo"
-}
-LEGENDS_7ZIP_ZIP = {
-    "0": "0 - Armazenar",
-    "1": "1 - Mais Rápido",
-    "3": "3 - Rápido",
-    "5": "5 - Normal",
-    "7": "7 - Máximo",
-    "9": "9 - Ultra"
-}
-LEGENDS_BZIP2 = {
-    "1": "1 - Mais Rápido",
-    "3": "3 - Rápido",
-    "5": "5 - Normal",
-    "7": "7 - Máximo",
-    "9": "9 - Ultra"
-}
-LEGENDS_TARXZ_ZIPX_TGZ_TARGZ_LZH_ISO = {
-    "0": "0 - Armazenar",
-    "1": "1 - Rápido",
-    "5": "5 - Padrão",
-    "9": "9 - Máximo"
-}
-LEGENDS_TAR_WIM = {
-    "0": "0 - Armazenar"
-}
+def get_translated_legends():
+    legends_winrar = {
+        "0": f"0 - {QCoreApplication.translate('CompressLevels', 'Armazenar')}",
+        "1": f"1 - {QCoreApplication.translate('CompressLevels', 'Mais Rápido')}",
+        "2": f"2 - {QCoreApplication.translate('CompressLevels', 'Rápido')}",
+        "3": f"3 - {QCoreApplication.translate('CompressLevels', 'Normal')}",
+        "4": f"4 - {QCoreApplication.translate('CompressLevels', 'Bom')}",
+        "5": f"5 - {QCoreApplication.translate('CompressLevels', 'Ótimo')}"
+    }
+
+    legends_7zip_zip = {
+        "0": f"0 - {QCoreApplication.translate('CompressLevels', 'Armazenar')}",
+        "1": f"1 - {QCoreApplication.translate('CompressLevels', 'Mais Rápido')}",
+        "3": f"3 - {QCoreApplication.translate('CompressLevels', 'Rápido')}",
+        "5": f"5 - {QCoreApplication.translate('CompressLevels', 'Normal')}",
+        "7": f"7 - {QCoreApplication.translate('CompressLevels', 'Máximo')}",
+        "9": f"9 - {QCoreApplication.translate('CompressLevels', 'Ultra')}"
+    }
+
+    legends_bzip2 = {
+        "1": f"1 - {QCoreApplication.translate('CompressLevels', 'Mais Rápido')}",
+        "3": f"3 - {QCoreApplication.translate('CompressLevels', 'Rápido')}",
+        "5": f"5 - {QCoreApplication.translate('CompressLevels', 'Normal')}",
+        "7": f"7 - {QCoreApplication.translate('CompressLevels', 'Máximo')}",
+        "9": f"9 - {QCoreApplication.translate('CompressLevels', 'Ultra')}"
+    }
+
+    legends_tarxz_zipx_tgz_targz_lzh_iso = {
+        "0": f"0 - {QCoreApplication.translate('CompressLevels', 'Armazenar')}",
+        "1": f"1 - {QCoreApplication.translate('CompressLevels', 'Rápido')}",
+        "5": f"5 - {QCoreApplication.translate('CompressLevels', 'Padrão')}",
+        "9": f"9 - {QCoreApplication.translate('CompressLevels', 'Máximo')}"
+    }
+
+    legends_tar_wim = {
+        "0": f"0 - {QCoreApplication.translate('CompressLevels', 'Armazenar')}"
+    }
+    
+    return {
+        'winrar': legends_winrar,
+        '7z_zip': legends_7zip_zip,
+        'bzip2': legends_bzip2,
+        'tarxz': legends_tarxz_zipx_tgz_targz_lzh_iso,
+        'tar_wim': legends_tar_wim
+    }
 
 
 class CompressType(Enum):
@@ -62,26 +76,32 @@ class MetodoCompressao:
         self.gerenciador_interface = GerenciadorInterface()
         self.config_menu = QMenu()
         self.compression_method_action = QAction()
+        self.compression_menu = None
         self.load_compression_method()
 
     def select_compression_method(self):
-        compression_menu = QMenu(self)
-        compression_menu.setStyleSheet(self.config_menu.styleSheet())
+        if self.compression_menu and hasattr(self.compression_menu, 'deleteLater'):
+            self.compression_menu.deleteLater()
 
-        self.add_submenu(compression_menu, 'RAR (0-5)', LEGENDS_WINRAR, CompressType.RAR)
-        self.add_submenu(compression_menu, 'ZIP (0-9)', LEGENDS_7ZIP_ZIP, CompressType.ZIP)
-        self.add_submenu(compression_menu, '7Z (0-9)', LEGENDS_7ZIP_ZIP, CompressType.SEVEN_Z)
-        self.add_submenu(compression_menu, 'Tar.BZ2 (1-9)', LEGENDS_BZIP2, CompressType.BZIP2)
-        self.add_submenu(compression_menu, 'ZIPX (0-9)', LEGENDS_TARXZ_ZIPX_TGZ_TARGZ_LZH_ISO, CompressType.ZIPX)
-        self.add_submenu(compression_menu, 'Tar.XZ (0-9)', LEGENDS_TARXZ_ZIPX_TGZ_TARGZ_LZH_ISO, CompressType.TARXZ)
-        self.add_submenu(compression_menu, 'TGZ (0-9)', LEGENDS_TARXZ_ZIPX_TGZ_TARGZ_LZH_ISO, CompressType.TGZ)
-        self.add_submenu(compression_menu, 'Tar.GZ (0-9)', LEGENDS_TARXZ_ZIPX_TGZ_TARGZ_LZH_ISO, CompressType.TARGZ)
-        self.add_submenu(compression_menu, 'LZH (0-9)', LEGENDS_TARXZ_ZIPX_TGZ_TARGZ_LZH_ISO, CompressType.LZH)
-        self.add_submenu(compression_menu, 'ISO (0-9)', LEGENDS_TARXZ_ZIPX_TGZ_TARGZ_LZH_ISO, CompressType.ISO)
-        self.add_submenu(compression_menu, 'TAR (0)', LEGENDS_TAR_WIM, CompressType.TAR)
-        self.add_submenu(compression_menu, 'WIM (0)', LEGENDS_TAR_WIM, CompressType.WIM)
+        self.compression_menu = QMenu(self)
+        self.compression_menu.setStyleSheet(self.config_menu.styleSheet())
 
-        self.compression_method_action.setMenu(compression_menu)
+        legends = get_translated_legends()
+
+        self.add_submenu(self.compression_menu, 'RAR (0-5)', legends['winrar'], CompressType.RAR)
+        self.add_submenu(self.compression_menu, 'ZIP (0-9)', legends['7z_zip'], CompressType.ZIP)
+        self.add_submenu(self.compression_menu, '7Z (0-9)', legends['7z_zip'], CompressType.SEVEN_Z)
+        self.add_submenu(self.compression_menu, 'Tar.BZ2 (1-9)', legends['bzip2'], CompressType.BZIP2)
+        self.add_submenu(self.compression_menu, 'ZIPX (0-9)', legends['tarxz'], CompressType.ZIPX)
+        self.add_submenu(self.compression_menu, 'Tar.XZ (0-9)', legends['tarxz'], CompressType.TARXZ)
+        self.add_submenu(self.compression_menu, 'TGZ (0-9)', legends['tarxz'], CompressType.TGZ)
+        self.add_submenu(self.compression_menu, 'Tar.GZ (0-9)', legends['tarxz'], CompressType.TARGZ)
+        self.add_submenu(self.compression_menu, 'LZH (0-9)', legends['tarxz'], CompressType.LZH)
+        self.add_submenu(self.compression_menu, 'ISO (0-9)', legends['tarxz'], CompressType.ISO)
+        self.add_submenu(self.compression_menu, 'TAR (0)', legends['tar_wim'], CompressType.TAR)
+        self.add_submenu(self.compression_menu, 'WIM (0)', legends['tar_wim'], CompressType.WIM)
+
+        self.compression_method_action.setMenu(self.compression_menu)
 
     def add_submenu(self, parent_menu, title, legends, compress_type):
         submenu = QMenu(title, self)

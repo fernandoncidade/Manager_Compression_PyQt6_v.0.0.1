@@ -1,11 +1,13 @@
 import sys
 from queue import Queue
+from PyQt6.QtCore import QCoreApplication
 from PyQt6.QtWidgets import (QMainWindow, QFileDialog, QTreeView, QMessageBox)
 from MotoresCompressao.mtcomp_02_motoresCompressao import (buscar_winrar_executavel, buscar_sevenzip_executavel, buscar_bandizip_executavel,
                                        CompressaoRAR, CompressaoZIP, Compressao7Z, CompressaoBZip2, CompressaoTarXZ,
                                        CompressaoTarGZ, CompressaoZIPX, CompressaoTGZ, CompressaoLZH, CompressaoISO,
                                        CompressaoTAR, CompressaoWIM, TesteIntegridade, Extracao)
 from .ui_03_dragDrop import DragDropListWidget
+from .ui_04_dialog_traducao import FileDialogTraduzivel, MessageBoxTraduzivel
 
 
 class GerenciadorInterface(QMainWindow):
@@ -13,6 +15,7 @@ class GerenciadorInterface(QMainWindow):
         super().__init__()
         self.compress_queue = Queue()
         self.compress_threads = []
+        self.dialogos_ativos = []
         self.compression_method_rar = None
         self.compression_method_zip = None
         self.compression_method_7z = None
@@ -124,12 +127,11 @@ class GerenciadorInterface(QMainWindow):
         import os
 
         if sys.platform == "win32" and file_mode == QFileDialog.FileMode.Directory:
-            from PyQt6.QtWidgets import QMessageBox
-
-            dialog = QFileDialog()
+            dialog = FileDialogTraduzivel()
             dialog.setFileMode(file_mode)
             dialog.setOption(QFileDialog.Option.DontUseNativeDialog, False)
             dialog.setOption(QFileDialog.Option.ShowDirsOnly, True)
+            dialog.traduzir_botoes()
 
             if self.last_directory and os.path.exists(self.last_directory):
                 dialog.setDirectory(self.last_directory)
@@ -138,7 +140,7 @@ class GerenciadorInterface(QMainWindow):
             first_selection = True
 
             while continue_selecting:
-                dialog_title = "Selecione um diretório" if first_selection else "Selecione outro diretório"
+                dialog_title = QCoreApplication.translate("InterfaceGrafica", "Selecione um diretório") if first_selection else QCoreApplication.translate("InterfaceGrafica", "Selecione outro diretório")
                 dialog.setWindowTitle(dialog_title)
 
                 if dialog.exec() == QFileDialog.DialogCode.Accepted:
@@ -157,9 +159,9 @@ class GerenciadorInterface(QMainWindow):
                         self.last_directory = os.path.dirname(selected_dirs[0])
 
                     reply = QMessageBox.question(
-                        None,
-                        "Seleção Múltipla",
-                        "Deseja adicionar mais diretórios?",
+                        None, 
+                        QCoreApplication.translate("InterfaceGrafica", "Seleção Múltipla"), 
+                        QCoreApplication.translate("InterfaceGrafica", "Deseja adicionar mais diretórios?"),
                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                     )
                     continue_selecting = (reply == QMessageBox.StandardButton.Yes)
@@ -173,8 +175,15 @@ class GerenciadorInterface(QMainWindow):
 
             return
 
-        dialog = QFileDialog()
+        dialog = FileDialogTraduzivel()
         dialog.setFileMode(file_mode)
+        dialog.traduzir_botoes()
+
+        if file_mode == QFileDialog.FileMode.ExistingFiles:
+            dialog.setWindowTitle(QCoreApplication.translate("InterfaceGrafica", "Selecionar Arquivos"))
+
+        else:
+            dialog.setWindowTitle(QCoreApplication.translate("InterfaceGrafica", "Selecionar"))
 
         if self.last_directory and os.path.exists(self.last_directory):
             dialog.setDirectory(self.last_directory)
@@ -411,37 +420,70 @@ class GerenciadorInterface(QMainWindow):
             self.start_compression_thread(next_thread)
 
         elif not self.compress_threads:
-            self.show_info_message("Empacotamento Concluído", "O Empacotamento dos arquivos foi concluído com sucesso!")
+            self.show_info_message(
+                QCoreApplication.translate("InterfaceGrafica", "Empacotamento Concluído"),
+                QCoreApplication.translate("InterfaceGrafica", "O Empacotamento dos arquivos foi concluído com sucesso!")
+            )
 
     def on_teste_integridade_finished(self):
-        self.show_info_message("Teste de Integridade Concluído", "O teste de integridade dos arquivos foi concluído com sucesso!")
+        self.show_info_message(
+            QCoreApplication.translate("InterfaceGrafica", "Teste de Integridade Concluído"),
+            QCoreApplication.translate("InterfaceGrafica", "O teste de integridade dos arquivos foi concluído com sucesso!")
+        )
 
     def on_extract_finished(self):
-        self.show_info_message("Extração Concluída", "A Extração dos arquivos foi concluída com sucesso!")
+        self.show_info_message(
+            QCoreApplication.translate("InterfaceGrafica", "Extração Concluída"),
+            QCoreApplication.translate("InterfaceGrafica", "A Extração dos arquivos foi concluída com sucesso!")
+        )
 
     def show_queue_warning(self):
-        self.show_warning("Aviso", "O processo solicitado foi colocado em fila, aguardando o anterior encerrar.")
+        self.show_warning(
+            QCoreApplication.translate("InterfaceGrafica", "Aviso"),
+            QCoreApplication.translate("InterfaceGrafica", "O processo solicitado foi colocado em fila, aguardando o anterior encerrar.")
+        )
 
     def show_method_warning(self):
-        self.show_warning("Aviso", "Por favor, selecione um método de compressão antes de prosseguir.")
+        self.show_warning(
+            QCoreApplication.translate("InterfaceGrafica", "Aviso"),
+            QCoreApplication.translate("InterfaceGrafica", "Por favor, selecione um método de compressão antes de prosseguir.")
+        )
 
     def show_integridade_warning(self):
-        self.show_warning("Aviso", "Por favor, selecione um arquivo para testar a integridade.")
+        self.show_warning(
+            QCoreApplication.translate("InterfaceGrafica", "Aviso"),
+            QCoreApplication.translate("InterfaceGrafica", "Por favor, selecione um arquivo para testar a integridade.")
+        )
 
     def show_extension_warning(self):
-        self.show_warning("Aviso", "Por favor, selecione um arquivo COMPACTADO para prosseguir.")
+        self.show_warning(
+            QCoreApplication.translate("InterfaceGrafica", "Aviso"),
+            QCoreApplication.translate("InterfaceGrafica", "Por favor, selecione um arquivo COMPACTADO para prosseguir.")
+        )
 
     def show_extract_warning(self):
-        self.show_warning("Aviso", "Nenhum dos programas (WinRAR, 7-Zip ou BandiZip) encontrado. Por favor, instale um deles e tente novamente.")
+        self.show_warning(
+            QCoreApplication.translate("InterfaceGrafica", "Aviso"),
+            QCoreApplication.translate("InterfaceGrafica", "Nenhum dos programas (WinRAR, 7-Zip ou BandiZip) encontrado. Por favor, instale um deles e tente novamente.")
+        )
 
     def show_selection_compression_warning(self):
-        self.show_warning("Aviso", "Por favor, selecione uma pasta antes de prosseguir.")
+        self.show_warning(
+            QCoreApplication.translate("InterfaceGrafica", "Aviso"),
+            QCoreApplication.translate("InterfaceGrafica", "Por favor, selecione uma pasta antes de prosseguir.")
+        )
 
     def show_selection_descompression_warning(self):
-        self.show_warning("Aviso", "Por favor, selecione um arquivo antes de prosseguir.")
+        self.show_warning(
+            QCoreApplication.translate("InterfaceGrafica", "Aviso"),
+            QCoreApplication.translate("InterfaceGrafica", "Por favor, selecione um arquivo antes de prosseguir.")
+        )
 
     def show_selection_destination_warning(self):
-        self.show_warning("Aviso", "Por favor, selecione um diretório de saída antes de prosseguir.")
+        self.show_warning(
+            QCoreApplication.translate("InterfaceGrafica", "Aviso"),
+            QCoreApplication.translate("InterfaceGrafica", "Por favor, selecione um diretório de saída antes de prosseguir.")
+        )
 
     def show_warning(self, title, message):
         self.show_message(QMessageBox.Icon.Warning, title, message)
@@ -449,9 +491,15 @@ class GerenciadorInterface(QMainWindow):
     def show_info_message(self, title, message):
         self.show_message(QMessageBox.Icon.Information, title, message)
 
+    def atualizar_traducoes_dialogos(self):
+        for dialogo in self.dialogos_ativos:
+            if hasattr(dialogo, "atualizar_traducao"):
+                dialogo.atualizar_traducao()
+
     def show_message(self, icon, title, message):
-        msg_box = QMessageBox(self)
-        msg_box.setIcon(icon)
-        msg_box.setWindowTitle(title)
-        msg_box.setText(message)
+        msg_box = MessageBoxTraduzivel(icon, title, message)
+
+        self.dialogos_ativos.append(msg_box)
+        msg_box.finished.connect(lambda: self.dialogos_ativos.remove(msg_box) if msg_box in self.dialogos_ativos else None)
+
         msg_box.exec()

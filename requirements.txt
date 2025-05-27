@@ -1,13 +1,14 @@
 altgraph==0.17.4
 autocommand==2.2.2
 backports.tarfile==1.2.0
-comtypes==1.4.10
+comtypes==1.4.11
 importlib_metadata==8.7.0
 importlib_resources==6.5.2
 jaraco.collections==5.1.0
 jaraco.context==6.0.1
 jaraco.functools==4.1.0
 jaraco.text==4.0.0
+lxml==5.4.0
 more-itertools==10.7.0
 packaging==25.0
 pefile==2024.8.26
@@ -17,8 +18,8 @@ pyinstaller==6.13.0
 pyinstaller-hooks-contrib==2025.4
 PyQt6==6.9.0
 PyQt6-Qt6==6.9.0
-PyQt6_sip==13.10.0
+PyQt6_sip==13.10.2
 pywin32-ctypes==0.2.3
-setuptools==80.4.0
+setuptools==80.9.0
 tomli==2.2.1
-zipp==3.21.0
+zipp==3.22.0
