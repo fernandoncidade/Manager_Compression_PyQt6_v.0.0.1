@@ -3,10 +3,42 @@ import sys
 import json
 from PyQt6.QtWidgets import QMenu
 from PyQt6.QtGui import QAction
-from PyQt6.QtCore import QCoreApplication
+from PyQt6.QtCore import QCoreApplication, Qt
 from functools import partial
 from enum import Enum
 from GerenciamentoUI.ui_02_gerenteGUILayouts import GerenciadorInterface
+
+
+class MenuPersistente(QMenu):
+    def __init__(self, titulo, parent=None):
+        super().__init__(titulo, parent)
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, False)
+        self.setMouseTracking(True)
+
+    def mousePressEvent(self, event):
+        action = self.actionAt(event.pos())
+        if action and action.isEnabled():
+            if not action.menu():
+                action.trigger()
+                event.accept()
+                return
+
+        super().mousePressEvent(event)
+
+    def leaveEvent(self, event):
+        pos = self.mapFromGlobal(self.parent().cursor().pos())
+        if not self.rect().contains(pos):
+            self.close()
+
+        super().leaveEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        action = self.actionAt(event.pos())
+        if action and action.isEnabled() and not action.menu():
+            event.accept()
+            return
+
+        super().mouseReleaseEvent(event)
 
 
 def get_translated_legends():
@@ -77,13 +109,14 @@ class MetodoCompressao:
         self.config_menu = QMenu()
         self.compression_method_action = QAction()
         self.compression_menu = None
+        self.method_actions = {}
         self.load_compression_method()
 
     def select_compression_method(self):
         if self.compression_menu and hasattr(self.compression_menu, 'deleteLater'):
             self.compression_menu.deleteLater()
 
-        self.compression_menu = QMenu(self)
+        self.compression_menu = MenuPersistente("Métodos de Compressão", self)
         self.compression_menu.setStyleSheet(self.config_menu.styleSheet())
 
         legends = get_translated_legends()
@@ -104,19 +137,48 @@ class MetodoCompressao:
         self.compression_method_action.setMenu(self.compression_menu)
 
     def add_submenu(self, parent_menu, title, legends, compress_type):
-        submenu = QMenu(title, self)
+        submenu = MenuPersistente(title, self)
         submenu.setStyleSheet(self.config_menu.styleSheet())
+
+        current_method = self.get_current_method(compress_type.value)
+
+        action_group = []
+
+        if compress_type.value not in self.method_actions:
+            self.method_actions[compress_type.value] = {}
+
         for method, legend in legends.items():
             action = QAction(legend, self)
+            action.setCheckable(True)
+            if method == current_method:
+                action.setChecked(True)
+
             action.triggered.connect(partial(self.set_compression_method, method=method, compress_type=compress_type))
             submenu.addAction(action)
+            action_group.append(action)
+
+            self.method_actions[compress_type.value][method] = action
 
         parent_menu.addMenu(submenu)
+
+    def get_current_method(self, compress_type_value):
+        attribute_name = f'compression_method_{compress_type_value}'
+        if hasattr(self.gerenciador_interface, attribute_name):
+            return getattr(self.gerenciador_interface, attribute_name)
+
+        return None
 
     def set_compression_method(self, method, compress_type):
         try:
             config_path = self.get_config_path()
-            setattr(self.gerenciador_interface, f'compression_method_{compress_type.value}', method)
+            compress_type_value = compress_type.value
+
+            setattr(self.gerenciador_interface, f'compression_method_{compress_type_value}', method)
+
+            if compress_type_value in self.method_actions:
+                for m, action in self.method_actions[compress_type_value].items():
+                    action.setChecked(m == method)
+
             self.save_compression_method(config_path)
 
         except Exception as e:
@@ -128,8 +190,10 @@ class MetodoCompressao:
             with open(config_path, 'r') as f:
                 config = json.load(f)
                 for compress_type in CompressType:
-                    if f'compress_type_{compress_type.value}' in config:
-                        self.set_compression_method(config[f'compress_type_{compress_type.value}'], compress_type)
+                    config_key = f'compress_type_{compress_type.value}'
+                    if config_key in config:
+                        method = config[config_key]
+                        setattr(self.gerenciador_interface, f'compression_method_{compress_type.value}', method)
 
         except FileNotFoundError:
             pass
@@ -140,7 +204,13 @@ class MetodoCompressao:
     def save_compression_method(self, config_path):
         try:
             os.makedirs(os.path.dirname(config_path), exist_ok=True)
-            config = {f'compress_type_{compress_type.value}': getattr(self.gerenciador_interface, f'compression_method_{compress_type.value}') for compress_type in CompressType}
+            config = {}
+
+            for compress_type in CompressType:
+                attribute_name = f'compression_method_{compress_type.value}'
+                if hasattr(self.gerenciador_interface, attribute_name):
+                    config[f'compress_type_{compress_type.value}'] = getattr(self.gerenciador_interface, attribute_name)
+
             with open(config_path, 'w') as f:
                 json.dump(config, f)
 

@@ -1,13 +1,12 @@
 import os
 import sys
-import json
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QScrollArea, QWidget, QLabel, QCheckBox, QSpacerItem, QSizePolicy)
 from PyQt6.QtGui import QIcon, QAction, QFont
 from PyQt6.QtCore import QCoreApplication
 from GerenciamentoUI.ui_01_layoutsCompressao import LayoutsCompressao
 from GerenciamentoUI.ui_02_gerenteGUILayouts import GerenciadorInterface
 from GerenciamentoUI.ui_03_dragDrop import DragDropListWidget
-from MotoresCompressao.mtcomp_01_metodosCompressao import MetodoCompressao, CompressType
+from MotoresCompressao.mtcomp_01_metodosCompressao import MetodoCompressao, MenuPersistente
 from Traducao.tr_01_gerenciadorTraducao import GerenciadorTraducao
 
 
@@ -27,7 +26,7 @@ class InterfaceGrafica(QMainWindow, MetodoCompressao):
 
         self.init_menu()
         self.init_ui()
-        self.load_compression_method()
+        MetodoCompressao.load_compression_method(self)
 
     def init_menu(self):
         self.menu_bar = self.menuBar()
@@ -38,7 +37,8 @@ class InterfaceGrafica(QMainWindow, MetodoCompressao):
         self.compression_method_action.triggered.connect(self.select_compression_method)
         self.config_menu.addAction(self.compression_method_action)
 
-        self.idiomas_menu = self.config_menu.addMenu(QCoreApplication.translate("InterfaceGrafica", "Idiomas"))
+        self.idiomas_menu = MenuPersistente(QCoreApplication.translate("InterfaceGrafica", "Idiomas"), self)
+        self.config_menu.addMenu(self.idiomas_menu)
 
         self.pt_br_action = QAction("Português (Brasil)", self)
         self.pt_br_action.triggered.connect(lambda: self.mudar_idioma("pt_BR"))
@@ -87,21 +87,6 @@ class InterfaceGrafica(QMainWindow, MetodoCompressao):
         self.gerenciador_interface.atualizar_traducoes_dialogos()
 
         self.update_compression_menus()
-
-    def load_compression_method(self):
-        config_path = os.path.join(getattr(sys, '_MEIPASS', os.path.dirname(os.path.realpath(__file__))), "Config_Method", 'config.json')
-        try:
-            with open(config_path, 'r') as f:
-                config = json.load(f)
-                for compress_type in CompressType:
-                    if f'compress_type_{compress_type.value}' in config:
-                        self.set_compression_method(config[f'compress_type_{compress_type.value}'], compress_type)
-
-        except FileNotFoundError:
-            pass
-
-        except Exception as e:
-            print(f"Erro ao carregar o método de compressão: {e}")
 
     def init_ui(self):
         self.setWindowTitle(QCoreApplication.translate("InterfaceGrafica", "Gerenciador de BackUp"))
