@@ -158,12 +158,17 @@ class GerenciadorInterface(QMainWindow):
 
                         self.last_directory = os.path.dirname(selected_dirs[0])
 
-                    reply = QMessageBox.question(
-                        None, 
-                        QCoreApplication.translate("InterfaceGrafica", "Seleção Múltipla"), 
+                    msg_box = MessageBoxTraduzivel(
+                        QMessageBox.Icon.Question,
+                        QCoreApplication.translate("InterfaceGrafica", "Seleção Múltipla"),
                         QCoreApplication.translate("InterfaceGrafica", "Deseja adicionar mais diretórios?"),
                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                     )
+
+                    self.dialogos_ativos.append(msg_box)
+                    msg_box.finished.connect(lambda: self.dialogos_ativos.remove(msg_box) if msg_box in self.dialogos_ativos else None)
+
+                    reply = msg_box.exec()
                     continue_selecting = (reply == QMessageBox.StandardButton.Yes)
                     first_selection = False
 
